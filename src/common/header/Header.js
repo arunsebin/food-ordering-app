@@ -17,6 +17,14 @@ import Input from "@material-ui/core/Input/Input";
 import SearchIcon from "@material-ui/icons/Search";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import Box from "@material-ui/core/Box";
+import FormControl from "@material-ui/core/FormControl";
+import InputLabel from "@material-ui/core/InputLabel";
+import FormHelperText from "@material-ui/core/FormHelperText";
+import Modal from "react-modal";
+import Tabs from "@material-ui/core/Tabs";
+import Tab from "@material-ui/core/Tab";
+import Typography from "@material-ui/core/Typography";
+import * as PropTypes from "prop-types";
 
 const theme = createMuiTheme({
   palette: {
@@ -50,7 +58,34 @@ const css = {
   }
 };
 
+const TabContainer = function (props) {
+  return (
+    <Typography component="div" style={{ padding: 0, textAlign: "center" }}>
+      {props.children}
+    </Typography>
+  );
+};
+
+TabContainer.propTypes = {
+  children: PropTypes.node.isRequired
+};
+
 class Header extends Component {
+  constructor() {
+    super();
+    this.state = {
+      modalIsOpen: false
+    };
+  }
+
+  closeModal = () => {
+    this.setState({ modalIsOpen: false });
+  };
+
+  openModalHandler = () => {
+    this.setState({ modalIsOpen: true });
+  };
+
   render() {
     return (
       <Box>
@@ -77,6 +112,7 @@ class Header extends Component {
             <Button
               variant="contained"
               size="large"
+              onClick={this.openModalHandler}
               startIcon={
                 <Icon size="small">
                   <AccountCircleIcon />
@@ -87,9 +123,15 @@ class Header extends Component {
             </Button>
           </Toolbar>
         </AppBar>
+        <Modal
+          ariaHideApp={false}
+          isOpen={this.state.modalIsOpen}
+          contentLabel="Login"
+          onRequestClose={this.closeModal}
+          style={css.content}
+        ></Modal>
       </Box>
     );
   }
 }
-
 export default Header;
