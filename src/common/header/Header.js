@@ -25,6 +25,7 @@ import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Typography from "@material-ui/core/Typography";
 import * as PropTypes from "prop-types";
+import "./Header.css";
 
 const theme = createMuiTheme({
   palette: {
@@ -66,6 +67,13 @@ const TabContainer = function (props) {
   );
 };
 
+const costumStyles = {
+  content: {
+    top: "50%",
+    left: "50%"
+  }
+};
+
 TabContainer.propTypes = {
   children: PropTypes.node.isRequired
 };
@@ -74,7 +82,12 @@ class Header extends Component {
   constructor() {
     super();
     this.state = {
-      modalIsOpen: false
+      modalIsOpen: false,
+      value: 0,
+      contactnoRequired: "dispNone",
+      passwordRequired: "dispNone",
+      contactno: "",
+      password: ""
     };
   }
 
@@ -84,6 +97,26 @@ class Header extends Component {
 
   openModalHandler = () => {
     this.setState({ modalIsOpen: true });
+  };
+
+  onTabChange = (event, value) => {
+    this.setState({ value });
+  };
+
+  onLoginClick = () => {
+    this.state.contactno === ""
+      ? this.setState({ contactnoRequired: "dispBlock" })
+      : this.setState({ contactnoRequired: "dispNone" });
+    this.state.password === ""
+      ? this.setState({ passwordRequired: "dispBlock" })
+      : this.setState({ passwordRequired: "dispNone" });
+  };
+
+  onContactNumberChange = (e) => {
+    this.setState({ contactno: e.target.value });
+  };
+  onPasswordChange = (e) => {
+    this.setState({ password: e.target.value });
   };
 
   render() {
@@ -128,8 +161,56 @@ class Header extends Component {
           isOpen={this.state.modalIsOpen}
           contentLabel="Login"
           onRequestClose={this.closeModal}
-          style={css.content}
-        ></Modal>
+          style={costumStyles}
+        >
+          <Tabs
+            className="tabs"
+            value={this.state.value}
+            onChange={this.onTabChange}
+          >
+            <Tab label="LOGIN" />
+            <Tab label="SIGNUP" />
+          </Tabs>
+          {this.state.value === 0 && (
+            <TabContainer>
+              <FormControl required>
+                <InputLabel htmlFor="contactno">Contact No.</InputLabel>
+                <Input
+                  id="contactno"
+                  type="text"
+                  contactno={this.state.contactno}
+                  onChange={this.onContactNumberChange}
+                />
+                <FormHelperText className={this.state.contactnoRequired}>
+                  <span className="red">required</span>
+                </FormHelperText>
+              </FormControl>
+              <br />
+              <FormControl required>
+                <InputLabel htmlFor="password">Password</InputLabel>
+                <Input
+                  id="password"
+                  type="password"
+                  password={this.state.password}
+                  onChange={this.onPasswordChange}
+                />
+                <FormHelperText className={this.state.passwordRequired}>
+                  <span className="red">required</span>
+                </FormHelperText>
+              </FormControl>
+              <br />
+              <br />
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={this.onLoginClick}
+              >
+                LOGIN
+              </Button>
+            </TabContainer>
+          )}
+          >
+        </Modal>
       </Box>
     );
   }
