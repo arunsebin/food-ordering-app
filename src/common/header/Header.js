@@ -48,7 +48,10 @@ const css = {
   inputSearch: {
     color: "#ffffff",
     width: "300px"
-  },
+  }
+};
+
+const costumStyles = {
   content: {
     top: "50%",
     left: "50%",
@@ -65,13 +68,6 @@ const TabContainer = function (props) {
       {props.children}
     </Typography>
   );
-};
-
-const costumStyles = {
-  content: {
-    top: "50%",
-    left: "50%"
-  }
 };
 
 TabContainer.propTypes = {
