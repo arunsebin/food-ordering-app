@@ -2,6 +2,9 @@ import React, { Component } from "react";
 import HomeCard from "./HomeCard";
 import "./Home.css";
 import Box from "@material-ui/core/Box";
+import Typography from "@material-ui/core/Typography";
+import Header from "../../common/header/Header";
+import "../../../node_modules/font-awesome/css/font-awesome.css";
 
 class Home extends Component {
   constructor() {
@@ -13,43 +16,70 @@ class Home extends Component {
   }
 
   componentDidMount() {
+    this.mounted = true;
     this.getRestaurants();
   }
 
-  render() {
-    let restaurantDetails = {};
-
-    return (
-      <div>
-        <div className="card-container">
-          {this.state.restaurants.map((restaurant) => (
-            <Box key={restaurant.id} className="card-main">
-              <HomeCard restaurant={restaurant} />
-            </Box>
-          ))}
-        </div>
-      </div>
-    );
-  }
+  restaurantDetails = (restaurantId) => {
+    this.props.history.push("/restaurant/" + restaurantId);
+  };
 
   //fetches the restaurants from backend
   getRestaurants = () => {
     const headers = { Accept: "application/json" };
     let that = this;
     let url = "http://localhost:8080/api/restaurant";
+    that.setState({ loading: true });
     return fetch(url, { method: "GET", headers })
       .then((response) => {
         return response.json();
       })
       .then((jsonResponse) => {
         that.setState({
-          restaurants: jsonResponse.restaurants
+          restaurants: jsonResponse.restaurants,
+          loading: false
         });
       })
       .catch((error) => {
         console.log("error user data", error);
       });
   };
+
+  render() {
+    return (
+      <div>
+        {this.mounted === true ? (
+          <div>
+            <Header />
+            {this.state.loading === true ? (
+              <Typography
+                className="loading-spinner"
+                variant="h4"
+                color="textSecondary"
+              >
+                loading...
+              </Typography>
+            ) : (
+              ""
+            )}
+            <div className="card-container">
+              {this.state.restaurants.map((restaurant) => (
+                <Box
+                  key={restaurant.id}
+                  className="card-main"
+                  onClick={() => this.restaurantDetails(restaurant.id)}
+                >
+                  <HomeCard restaurant={restaurant} />
+                </Box>
+              ))}
+            </div>
+          </div>
+        ) : (
+          ""
+        )}
+      </div>
+    );
+  }
 }
 
 export default Home;
